@@ -7,6 +7,7 @@ import {GitViewerComponent} from './git-viewer/git-viewer.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 // guards 
 import {AuthGuard} from './guards/auth.guard';
+import { DetailedViewerComponent } from './detailed-viewer/detailed-viewer.component';
 
 
 
@@ -20,6 +21,12 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     component: GitViewerComponent,
+    canActivate: [ AuthGuard ]
+
+  },
+  {
+    path: 'detailed',
+    component: DetailedViewerComponent,
     canActivate: [ AuthGuard ]
 
   },

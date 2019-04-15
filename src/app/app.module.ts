@@ -11,13 +11,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule} from "@angular/forms";
 import { GitViewerComponent } from './git-viewer/git-viewer.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DetailedViewerComponent } from './detailed-viewer/detailed-viewer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     GitViewerComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DetailedViewerComponent
   ],
   imports: [
     BrowserModule,

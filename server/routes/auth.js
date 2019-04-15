@@ -1,8 +1,7 @@
 /* Mode modules */
 const express = require('express'),
             jwt = require('jsonwebtoken'), // give session JSON web token
-            request = require('request'),
-            repoF = require('./repos'),
+            repos = require('./repos'),
             config = require('../config');
                    
 /* Static files */
@@ -13,7 +12,15 @@ const User = require('../models/user');
 var router = express.Router();
 
 
-repoF.getRepoDetails();
+
+/* INIT PHASE  GET ALL DATA AND CACHE IT */
+repos.getRepoDetails();
+
+
+
+
+
+
 /* Authentication middleware */
 const checkToken = function(req,res,next){
     const token = req.signedCookies['JWT_token']; 
@@ -52,6 +59,29 @@ router.use(checkToken);
 // just for check 
 router.post('/',(req,res,next)=>{
     res.send({});
+})
+
+
+
+router.get('/dashboard',(req,res,next)=>{
+    const repoNames =  repos.myCache.get('repoNames');
+    let response = {success: true, error:'',data:[]};
+    response.data = repoNames.map((singleRepoName)=>{
+        var tmp = repos.myCache.get(singleRepoName);
+        if(!tmp)res.json({success:false , error:'Processing data, please wait'}).end(); // I dont think that this will end the execution
+        return tmp ; 
+    })
+    res.json(response);
+})
+
+
+router.get('/detailed/:reponame',(req,res,next)=>{
+    const {reponame} = req.params; 
+    let response = {success: true, error:'',data:[]};
+    console.log(reponame)
+    response.data = repos.myCache.get(reponame.toString());
+
+    res.json(response);
 })
 
 

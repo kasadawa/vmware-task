@@ -11,11 +11,6 @@ export class AuthService {
   loginStatus:boolean =false; 
   constructor(private http:HttpClient,private router:Router) {}
 
-  getToken(){
-    // var token:String = window.localStorage.getItem('JWT_token');
-    // console.log(token)
-    console.log(document.cookie);
-  }
   isLoggedIn():Promise<boolean> {
     return this.http.post(_HOST + '/auth',{},{withCredentials: true}).toPromise().then((_)=>{
       this.loginStatus = true;
@@ -27,11 +22,19 @@ export class AuthService {
 
   logout(){
     this.http.post(_HOST + '/logout',{},{withCredentials: true}).subscribe((res)=>{
-      console.log(res)
+        console.log(res)
         this.loginStatus = false; 
         this.router.navigate(['/login']);
     
     });
+  }
+
+  getDashboard(){
+    return this.http.get(_HOST + '/auth/dashboard',{withCredentials:true});
+  }
+
+  getDetailed(repoName){
+    return this.http.get(_HOST + '/auth/detailed/'+ repoName.toString() ,{withCredentials:true});
   }
 }
 

@@ -1,0 +1,35 @@
+<p>vmware/{{repoName}}  <button class="btn btn-outline" (click)="backToRepos()">Back to Pinned Repos</button></p>
+
+<clr-tabs>
+  <clr-tab>
+      <button clrTabLink id="link1">Details</button>
+      <clr-tab-content id="content1" *clrIfActive="true">
+      <div class="container">
+        <pre>{{readme}}</pre>
+      </div>
+      </clr-tab-content>
+  </clr-tab>
+  <clr-tab>
+      <button clrTabLink>Commits</button>
+      <clr-tab-content *clrIfActive>
+      
+        <clr-datagrid *ngIf="reposData">
+          <clr-dg-column>Comment </clr-dg-column>
+          <clr-dg-column>Date</clr-dg-column>
+          <clr-dg-column>Contributor</clr-dg-column>
+          <clr-dg-column>Patch</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let item of reposData.dCommits">
+              <clr-dg-cell>{{item.comment}}</clr-dg-cell>
+              <clr-dg-cell>{{item.date}}</clr-dg-cell>
+              <clr-dg-cell>{{item.contributor}}</clr-dg-cell>
+              <clr-dg-cell><a href="{{item.patch}}" class="btn btn-outline" target="_blank">Open Patch</a></clr-dg-cell>
+
+          </clr-dg-row>
+        
+          <clr-dg-footer>latest 30 commits</clr-dg-footer>
+        </clr-datagrid>
+
+      </clr-tab-content>
+  </clr-tab>
+</clr-tabs>

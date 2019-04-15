@@ -3,7 +3,7 @@ const   express = require('express'),
         bodyParser = require('body-parser'),
         cookieParser = require('cookie-parser'),
         Promise = require("bluebird"),
-        mongoose = Promise.promisifyAll(require("mongoose"));
+        mongoose = Promise.promisifyAll(require("mongoose")),
         config = require('./config'),
         app = express();
 

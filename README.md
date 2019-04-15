@@ -7,7 +7,7 @@ Create a website which has the following pages:
 - General Info & commit Tabs 
 
 ## Requrements 
-In dashboard page (after the user is logged in)github’s API retrieve  https://github.com/vmware pinned repos and visualize them using Clarity.
+In dashboard page (after the user is logged in)github’s API retrieve  [https://github.com/vmware](https://github.com/vmware) pinned repos and visualize them using Clarity.
 
 The data in the UI per repo should have: name, license, commits, contributors, releases and branches. It should be easily filtered.
 
@@ -33,11 +33,11 @@ Interaction to github should be done in the BE using node.js. Data may be cached
   - Chai
   - Sinon
   - Mocha
-  - Mongoose (to save the user credentials )
-  - sjcl (for password encryption) 
-  - jsonwebtoken (to create and check the token )
-  - body-parser
-  - cookie-parser
+  - [Mongoose](https://github.com/Automattic/mongoose) (to save the user credentials )
+  - [sjcl](https://github.com/bitwiseshiftleft/sjcl) (for password encryption) 
+  - [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken#readme) (to create and check the token )
+  - [body-parser](https://github.com/expressjs/body-parser)
+  - [cookie-parser](https://github.com/expressjs/cookie-parser)
  
 
 ### Login Page 
@@ -45,6 +45,49 @@ Login  is implemented with `JWT` token and signed cookie, so when the user is au
 
 The point of using JWT is also to send a data with the authetication , but in this implementation the browser can't read the JWT. It's more secure of point accessing/ reading the token.
 
+User credentials are saved in mlab, using `mongoose` The password is encrypted using sjcl.
+
+### Dashboard Page 
+
+
+
+
+### Detailed Page 
+
+
+## Run the project 
+Install all of the deppendencies with: 
+`npm install`
+and 
+`cd server && npm install` 
+
+
+From the root director run the nodeJS server: 
+
+`node server/` or you can run it with nodemon
+
+And the Front-End server:
+`ng serve` 
+
+## Tests 
+
+
 
 
 ### What can be improved
+ - some of the functions in the nodeJS routes/repos.js file. If you write the functions with async/await the code will look more readable. 
+ - My opinion is that server should handle all of the authentication and routing. So I would build the project, serve it from dist folder and again check for credentials, before loading a specific route. 
+ - if you really want to view some stats I would craw the html and get the stats, because it would be easier and time saving
+ 
+
+
+## What was a challange 
+Github API ! It exclude some of the results. 
+
+For example for `/releases` does not return the amount of releases thats mentioned on the github repository page, because the releases that are mentioned on the official page are releases + tags.
+
+
+
+## Usefill links 
+
+Some emails are not the same as the commiter - [explanation](https://help.github.com/en/articles/about-commit-email-addresses)
