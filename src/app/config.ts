@@ -1,0 +1,1 @@
+export var _HOST:string = 'http://localhost:3000';

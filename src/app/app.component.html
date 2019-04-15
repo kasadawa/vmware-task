@@ -1,0 +1,36 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+
+
+<div class="main-container">
+  <!-- <div class="alert alert-app-level">
+      ...
+  </div> -->
+
+  <header class="header header-6">
+      <div class="header-nav">
+
+          <a *ngIf="!authService.loginStatus" routerLink="/login" class="active nav-link nav-text" routerLinkActive="active">Login</a>
+      </div>
+
+      <div *ngIf="authService.loginStatus" class="header-actions">
+          <clr-dropdown>
+              <button class="nav-icon" clrDropdownTrigger>
+                  <clr-icon shape="cog"></clr-icon>
+                  <clr-icon shape="caret down"></clr-icon>
+              </button>
+              <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+                  <a (click)='logout($event)' clrDropdownItem>Log out</a>
+              </clr-dropdown-menu>
+          </clr-dropdown>
+      </div>
+  </header>
+  <nav class="subnav">
+      
+  </nav>
+  <div class="content-container">
+      <div class="content-area">
+        <router-outlet></router-outlet>
+      </div>
+  </div>
+</div>

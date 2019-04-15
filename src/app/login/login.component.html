@@ -1,0 +1,22 @@
+<div class="login-wrapper">
+  <form class="login">
+      <section class="title">
+          <h3 class="welcome">Welcome to</h3>
+          My App
+          <h5 class="hint">default login admin@abv.bg & admin123</h5>
+      </section>
+      <div class="login-group">
+
+          <clr-input-container>
+              <input type="email" name="emial" clrInput placeholder="Email" [(ngModel)]="email"/>
+          </clr-input-container>
+          <clr-password-container>
+              <input type="password" name="password" clrPassword placeholder="Password" [(ngModel)]="password"/>
+          </clr-password-container>
+          <div class="" [ngClass]='errorClass'>
+              {{errorMessage}}
+          </div>
+          <button type="submit" class="btn btn-primary" (click)="login()">Login</button>
+      </div>
+  </form>
+</div>
