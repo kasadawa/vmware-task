@@ -57,7 +57,7 @@ When user clicks on a row the component redirect's him to /detailed/:reponame ro
 ### Detailed Page 
 In the front-end its implemented under Detailed-viewer component and commits-viewer component.
 
-/detailed/:reponame route at default loads the Detailed-viewer component and shows the readme file in <pre> tag. 
+/detailed/:reponame route at default loads the Detailed-viewer component and shows the readme file in `<pre>` tag. 
 
 After user clicks on Commits Tab, a datagrid is displayed (from the commit-viewer component).
 
