@@ -10,10 +10,10 @@
   <header class="header header-6">
       <div class="header-nav">
 
-          <a *ngIf="!authService.loginStatus" routerLink="/login" class="active nav-link nav-text" routerLinkActive="active">Login</a>
+          <a *ngIf="!isAuthenticated" routerLink="/login" class="active nav-link nav-text" routerLinkActive="active">Login</a>
       </div>
 
-      <div *ngIf="authService.loginStatus" class="header-actions">
+      <div *ngIf="isAuthenticated" class="header-actions">
           <clr-dropdown>
               <button class="nav-icon" clrDropdownTrigger>
                   <clr-icon shape="cog"></clr-icon>

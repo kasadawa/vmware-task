@@ -7,9 +7,11 @@ import { AuthService} from './services/auth.service';
 })
 export class AppComponent {
   title:string = 'vmwareProject';
+  isAuthenticated:boolean = false; 
+  constructor(public authService:AuthService){}
 
-  constructor(public authService:AuthService){
-    console.log(authService.loginStatus)
+  ngOnInit(){
+    this.authService.loginStatusUpdated.subscribe(status=>this.isAuthenticated = status)
   }
 
   logout(event){

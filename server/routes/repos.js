@@ -1,14 +1,15 @@
 const Promise = require("bluebird"),
+        conf = require('../config'),
     NodeCache = require( "node-cache" ),
       request = Promise.promisifyAll(require('request')); // there is an additional libraly for request with bluebird 
-// this need to be optimised 
-// but I didnt find any way to list organisation pinnedRepos
-const repos = [ 'clarity', 'photon','pyvmomi', "open-vm-tools",'govmomi'] ; 
-const apiHref = 'https://api.github.com/repos/vmware';
 
-const myCache = new NodeCache(); // we can  promisefy it with Bluebird
+
+
+const repos = conf.pinned_repos; 
+const apiHref = conf.api_href;
+const myCache = new NodeCache(); 
     
-var options = {url: '' , headers: { 'User-Agent':'reuqest', 'Authorization': 'token a5e4355652f8b3e10734df105f1d9fd4fca1b36c'}} // requred from github API 
+var options = {url: '' , headers: { 'User-Agent':'request', 'Authorization': conf.github_token}} // requred from github API 
 
 
 function getRepoDetails(){
@@ -19,35 +20,43 @@ function getRepoDetails(){
     // the approach should be to make a huge promise and promise all 
     repos.map((repoName)=>{
 
-        // thats not the best approach 
-        Promise.all([
-        getCount('commits',repoName),
-        getCount('releases',repoName),
-        getCount('contributors',repoName),
-        getCount('branches',repoName),
-        getLicense(repoName),
-        getReadMe(repoName),
-        getLatestCommits(repoName)
-    ]).then((vals)=>{
-        const RepoObj =  {
-            name: repoName,
-            commits:vals[0],
-            releases:vals[1],
-            contributors:vals[2], 
-            branches:vals[3],
-            license:vals[4],
-            readme: vals[5],
-            dCommits: vals[6],
-        }
-        myCache.set(repoName, RepoObj);
-    }).catch((error)=>{
-        console.log('there is a error, please restart the server in order to cache the data '+ error);
-    })
+            Promise.all([
+            getCount('commits',repoName),
+            getCount('releases',repoName),
+            getCount('contributors',repoName),
+            getCount('branches',repoName),
+            getLicense(repoName),
+            getReadMe(repoName),
+            getLatestCommits(repoName)
+        ]).then((vals)=>{
+            // console.log(vals)
+            const RepoObj =  {
+                name: repoName,
+                commits:vals[0],
+                releases:vals[1],
+                contributors:vals[2], 
+                branches:vals[3],
+                license:vals[4],
+            }
+            const detailedRepoObj = {
+                readme: vals[5],
+                commits: vals[6]
+            }
+            myCache.set(repoName, RepoObj);
+            myCache.set(`detailed_${repoName}`,detailedRepoObj)
+        }).catch((error)=>{
+            error = error.message || error;
+            console.log('there is a error, please restart the server in order to cache the data: '+ error);
+            // process.exit(1);
+        })
 
     })
 
 
 }
+
+// you can do something like 
+// if the response.status is different than 200, throw error 
 
 //getting the latest 30 commits from the first page 
 function getLatestCommits(repoName){
@@ -55,6 +64,10 @@ function getLatestCommits(repoName){
     options.url = licenseUrl; 
     return request.getAsync(options)
     .then((res) =>{
+        if(!res.headers.status.includes(200) && !res.headers.status.includes(304)){
+            throw new Error('The url was not loaded correctly')
+        }
+
         res.body  = JSON.parse(res.body);                
         const commitsArray = res.body.map((singleCommit)=>{
             return {
@@ -66,7 +79,6 @@ function getLatestCommits(repoName){
         });
         return commitsArray;
         })
-    .catch(err => err);
 }
 
 
@@ -75,10 +87,15 @@ function getReadMe(repoName){
     options.url = licenseUrl; 
     return request.getAsync(options)
             .then((res) =>{
+                      
+                if(!res.headers.status.includes(200) && !res.headers.status.includes(304)){
+                    throw new Error('The url was not loaded correctly')
+                }
+
                 res.body  = JSON.parse(res.body);                
                 return  res.body.content || 'There is no README.md';
                 })
-            .catch(err => err);
+          
 }
 
 function getLicense(repoName){
@@ -89,8 +106,8 @@ function getLicense(repoName){
                 res.body  = JSON.parse(res.body);                
                 return  (res.body.license === undefined ? 'no license provided': res.body.license.name);
 
-                })
-            .catch(err => err);
+            })
+           
 }
 
 
@@ -100,40 +117,81 @@ function getLicense(repoName){
 
 function getCount(funcName,repoName ){
     let lastPageNum = 0, counts = 0 ; 
-
     const licenseUrl = `${apiHref}/${repoName}/${funcName}?page=`;
     options.url = licenseUrl + 1;
-
+    
     return request.getAsync(options)
-        .then((res) =>{
-            // check if there are more pages 
-            if(!!res.headers.link){
-                const [nextURL , lastURL] = res.headers.link.split(',');
-                lastPageNum = lastURL.match(/(?<==)\d+/g).join(); // in order to get the number as a digit
-                options.url = licenseUrl + lastPageNum;
-                return request.getAsync(options)
-            }else{
-                // if its single page just resolve on to the chain 
-                res.body  = JSON.parse(res.body)
-                return Promise.resolve(res.body.length);
-            }
+    .then((res) =>{
+      
+        if(!res.headers.status.includes(200) && !res.headers.status.includes(304)){
+           
+            throw new Error('The url was not loaded correctly')
+        }
 
-        }).then((lastPageRes)=>{
-            // if its not single page 
-            if(lastPageNum !== 0){
-                lastPageRes.body  = JSON.parse(lastPageRes.body)
-                counts = (lastPageNum-1)*30 + lastPageRes.body.length; 
-            }else{
-                counts = lastPageRes;
-            }
-            console.log(repoName+" "+ funcName+" " + counts);
-            return counts;
+        // check if there are more pages 
+        if(!!res.headers.link){
+           
+            const [ , lastURL] = res.headers.link.split(',');
+            lastPageNum = lastURL.match(/(?<==)\d+/g).join(); // in order to get the number as a digit
+            options.url = licenseUrl + lastPageNum;
+            return request.getAsync(options)
+        }else{
+            // if its single page just resolve on to the chain 
+            res.body  = JSON.parse(res.body)
+            return Promise.resolve(res.body.length);
+        }
+
+    }).then((lastPageRes)=>{
+        // if its not single page 
+        if(lastPageNum !== 0){
+            lastPageRes.body  = JSON.parse(lastPageRes.body)
+            counts = (lastPageNum-1)*30 + lastPageRes.body.length; 
+        }else{
+            counts = lastPageRes;
+        }
+        // console.log(repoName+" "+ funcName+" " + counts);
+        return counts;
         })
-        .catch(err => err);
 }
 
 
 module.exports = {
     getRepoDetails: getRepoDetails,
-    myCache:myCache   
+    myCache:myCache,
+    getLatestCommits,
+    getCount,
+
+}
+
+
+
+
+
+/* I've removed the await at first declaration in order to execute the functions in parallel 
+# JUST Testing ES6 style 
+ The error handling is not that good as Promises error handling */
+
+async function callAsync(repoName){
+    try{
+    const commits =  getCount('commits',repoName);
+    const releases =  getCount('releases',repoName);
+    const contributors =  getCount('contributors',repoName);
+    const branches = getCount('branches',repoName);
+    const license = getLicense(repoName);
+    const readme = getReadMe(repoName);
+    const dCommits = getLatestCommits(repoName);
+    const RepoObj =  {
+        name: repoName,
+        commits:await commits,
+        releases: await releases,
+        contributors: await contributors, 
+        branches: await branches,
+        license: await license,
+        readme: await readme,
+        dCommits: await dCommits,
+    }
+    myCache.set(repoName, RepoObj);
+    }catch(err){
+        console.log('there is an error: ' + err)
+    }
 }

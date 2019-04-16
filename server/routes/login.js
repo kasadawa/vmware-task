@@ -16,7 +16,7 @@ var router = express.Router();
 
 router.post('/login',(req,res)=>{
     const { email , password } = req.body ;
-    var ret = {}; // the return parameter
+    let ret = {}; // the return parameter
     
   
     User.findOne( { email },  (err, data) => {
@@ -30,12 +30,9 @@ router.post('/login',(req,res)=>{
 
             if (data.comparePassword(password) == true) {
                 // 8 hours expiration
-                const token = jwt.sign({ 
-                                email: data.email,
-                                 }
-                        , config.secret, { expiresIn: 60 * 60 * 8 });
+                const token = jwt.sign({ email: data.email} , config.secret, { expiresIn: 60 * 60 * 6 });
                 
-                ret = {success:true, email: data.email };
+                ret = {success:true};
                 // saveCookie
 
 
@@ -44,8 +41,8 @@ router.post('/login',(req,res)=>{
                     httpOnly: true, // The cookie only accessible by the web server
                     signed: true, // Indicates if the cookie should be signed
                 };
-                res.cookie('JWT_token',token, options);
-                console.log('adding coocki')
+                res.cookie(config.cookie_name,token, options);
+                
             } else {
                 ret  = {success:false, err: 'Your password is wrong, please try again.' };
             }
@@ -58,7 +55,7 @@ router.post('/login',(req,res)=>{
 
 
 router.post('/logout', (req,res,next)=>{
-    res.clearCookie('JWT_token');
+    res.clearCookie(config.cookie_name);
     res.status(200).location(config._HOST).end();
 });
 
@@ -72,7 +69,7 @@ module.exports = router;
 
 
 
-// In case you want to register  a new user
+/* In case you want to register  a new user */
 
 // var userObj = new User({
 //     email: 'admin@abv.bg',

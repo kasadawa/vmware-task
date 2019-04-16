@@ -48,11 +48,18 @@ The point of using JWT is also to send a data with the authetication , but in th
 User credentials are saved in mlab, using `mongoose` The password is encrypted using sjcl.
 
 ### Dashboard Page 
+In the front-end its implemented under git-viewer component. The Data is viewed with Datagrid, because we need to implement filters & sorting. 
 
+There are 2 filters under the Name and License columns, 1 sort under Commits column.
 
-
+When user clicks on a row the component redirect's him to /detailed/:reponame route. 
 
 ### Detailed Page 
+In the front-end its implemented under Detailed-viewer component and commits-viewer component.
+
+/detailed/:reponame route at default loads the Detailed-viewer component and shows the readme file in <pre> tag. 
+
+After user clicks on Commits Tab, a datagrid is displayed (from the commit-viewer component).
 
 
 ## Run the project 
@@ -67,27 +74,51 @@ From the root director run the nodeJS server:
 `node server/` or you can run it with nodemon
 
 And the Front-End server:
+
 `ng serve` 
 
 ## Tests 
+The tests are located under `server/tests` folder. 
 
+To execute the test, just run: 
 
+`npm test`
+
+The command will execute all of the tests. 
 
 
 ### What can be improved
  - some of the functions in the nodeJS routes/repos.js file. If you write the functions with async/await the code will look more readable. 
- - My opinion is that server should handle all of the authentication and routing. So I would build the project, serve it from dist folder and again check for credentials, before loading a specific route. 
+ - My opinion is that server should handle all of the authentication and routing( not possible with SPA ). So I would build the project, serve it from dist folder and again check for credentials, before loading a specific route. 
  - if you really want to view some stats I would craw the html and get the stats, because it would be easier and time saving
- 
+ - add counter & captcha on /login route (anti spam)
+ - can check the email / password before sending them to the backend 
+ - more tests
+ - more filters/sorting under the "Details" and "Commits" tab 
+ - more error handling
+ - getting the pinned repositories with a API call  // they are currently hardcoded
+ - register page and changing the user/organisation, because the app can view any public repo
 
 
 ## What was a challange 
 Github API ! It exclude some of the results. 
 
+
 For example for `/releases` does not return the amount of releases thats mentioned on the github repository page, because the releases that are mentioned on the official page are releases + tags.
 
+Also the /stats CALL  excludes some of the commits. 
 
+Maybe the better approach is to work with GRAPHQL API.
+
+One cool thing is that github checks the code and if it finds OAuth token in the source it will dissable it automatically. 
 
 ## Usefill links 
 
-Some emails are not the same as the commiter - [explanation](https://help.github.com/en/articles/about-commit-email-addresses)
+Some emails are not the same as the commiter email - [explanation](https://help.github.com/en/articles/about-commit-email-addresses)
+
+github API - [link](https://developer.github.com/v3/)
+
+Angular Event Emmiter <3  - [link](https://angular.io/api/core/EventEmitter)
+
+Header withCredentials - [link](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials)
+

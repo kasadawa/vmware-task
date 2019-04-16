@@ -15,19 +15,23 @@ export class AuthGuard implements CanActivate {
   
   return this.authService.isLoggedIn().then((res:boolean)=>{
     
-    if(res && state.url === "/login"){
-      this.router.navigate(['/dashboard']);
-      return false; 
+
+    // ako sme authenitificari i state.url == 'login'
+    if(state.url === "/login"){
+      return !res; 
     }
 
-    if(!res && state.url === "/login" ){
-      console.log('goint here')
-      return true; 
-    }
-    if(!res && state.url !== '/login'){
+
+    if(!res){
       this.router.navigate(['/login']);
       return res; 
     }
+
+    if(state.url === "/"){
+      this.router.navigate(['/dashboard'])
+    }
+
+
     return res;
   });
 

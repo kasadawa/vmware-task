@@ -12,6 +12,8 @@ import { FormsModule} from "@angular/forms";
 import { GitViewerComponent } from './git-viewer/git-viewer.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DetailedViewerComponent } from './detailed-viewer/detailed-viewer.component';
+import { CommitsViewerComponent } from './commits-viewer/commits-viewer.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { DetailedViewerComponent } from './detailed-viewer/detailed-viewer.compo
     LoginComponent,
     GitViewerComponent,
     PageNotFoundComponent,
-    DetailedViewerComponent
+    DetailedViewerComponent,
+    CommitsViewerComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

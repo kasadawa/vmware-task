@@ -36,8 +36,7 @@ export class LoginComponent implements OnInit {
 
 
     this.loginService.login({email: this.email,password: this.password}).subscribe((data:{success:boolean,err:string})=>{
-      if(!!data.success){
-          console.log(data);
+      if(data.success){
           this.router.navigate(['/dashboard']);
       }else{
         this.showError(); 

@@ -8,6 +8,8 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 // guards 
 import {AuthGuard} from './guards/auth.guard';
 import { DetailedViewerComponent } from './detailed-viewer/detailed-viewer.component';
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -25,14 +27,14 @@ const appRoutes: Routes = [
 
   },
   {
-    path: 'detailed',
+    path: 'detailed/:reponame',
     component: DetailedViewerComponent,
     canActivate: [ AuthGuard ]
 
   },
   { path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
+    component: HomeComponent,
+    canActivate: [ AuthGuard ]
   },
   { path: '**', component: PageNotFoundComponent }
 ];

@@ -3,12 +3,7 @@ const express = require('express'),
             jwt = require('jsonwebtoken'), // give session JSON web token
             repos = require('./repos'),
             config = require('../config');
-                   
-/* Static files */
-const User = require('../models/user');           
-
-
-
+                    
 var router = express.Router();
 
 
@@ -24,11 +19,7 @@ repos.getRepoDetails();
 /* Authentication middleware */
 const checkToken = function(req,res,next){
     const token = req.signedCookies['JWT_token']; 
-    console.log(token);
-    console.log('token');
     if(!token){
-    console.log('token');
-
         res.status(401).location(config._HOST).end();
     }else{
         jwt.verify(token, config.secret, (err) => {
@@ -44,7 +35,6 @@ const checkToken = function(req,res,next){
                 // }
                 res.status(401).location(config._HOST).end();
             }else{
-                console.log('authenticated success');
                 next();
             }
           });
@@ -62,25 +52,41 @@ router.post('/',(req,res,next)=>{
 })
 
 
+// with iterable protocol ;) 
 
 router.get('/dashboard',(req,res,next)=>{
-    const repoNames =  repos.myCache.get('repoNames');
+    const repoNames =  config.pinned_repos[Symbol.iterator]();
     let response = {success: true, error:'',data:[]};
-    response.data = repoNames.map((singleRepoName)=>{
-        var tmp = repos.myCache.get(singleRepoName);
-        if(!tmp)res.json({success:false , error:'Processing data, please wait'}).end(); // I dont think that this will end the execution
-        return tmp ; 
-    })
+
+    var singleRepoName = repoNames.next(); 
+
+    while(!singleRepoName.done){
+        let tmp = repos.myCache.get(singleRepoName.value);
+        if(!tmp){
+            
+            res.json({success:false , error:'Processing data, please wait && refresh'});
+            return next(); // end the router 
+            
+        }; // I dont think that this will end the execution
+        response.data.push(tmp);
+
+        singleRepoName = repoNames.next();     
+    }
+
+    //if the data is processed return it
     res.json(response);
+   
 })
 
 
 router.get('/detailed/:reponame',(req,res,next)=>{
     const {reponame} = req.params; 
     let response = {success: true, error:'',data:[]};
-    console.log(reponame)
-    response.data = repos.myCache.get(reponame.toString());
-
+    response.data = repos.myCache.get('detailed_'+reponame);
+    if(!response.data){
+        res.json({success:false , error:'Processing data, please wait && refresh'});
+        return next(); // end the router 
+    }
     res.json(response);
 })
 

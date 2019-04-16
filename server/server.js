@@ -19,7 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 /* Connect to the database */
 mongoose.connect(config.database)
-        .then(()=> console.log('Connected to the Database'))
+        .then(()=> {
+                console.log('Connected to the Database')
+        })
         .catch((err)=> console.log("Database Error: " + err))
 
 
@@ -35,13 +37,12 @@ app.use('/auth',auth);
 
 
 /* if we want to serve from DIST folder , when we biuld our angular project */
+/* We should use wildcast , because we are serving SPA ,otherwise we can get errors */
 
-// app.get('/', aut.isLoggedIn, (req, res) =>{
+// app.get('/', (req, res) =>{
 //     res.sendFile(__dirname + '/dist/index.html');
 // })
 
-
 // app.use(express.static(__dirname + '/dist'))
-
 
 app.listen(config.port, () => console.log(`Example app listening on port ${config.port}!`))

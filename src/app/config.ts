@@ -7,6 +7,10 @@ export class ReposData{
     contributors:number;
     branches:number;
     license:string;
-    readme:string; 
-    dCommits:Array<Object>;
   };
+
+
+export class DetailedData{
+    readme:string; 
+    commits:Array<Object>;
+}

@@ -7,7 +7,6 @@ import {ClrDatagridStringFilterInterface,ClrDatagridComparatorInterface} from "@
 
 class NameFilter implements ClrDatagridStringFilterInterface<ReposData> {
     accepts(repo: ReposData, search: string):boolean {
-      console.log(repo)
         return repo.name.toLowerCase().indexOf(search) >= 0;
     }
 }
@@ -35,15 +34,19 @@ export class GitViewerComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.getDashboard();
+  }
+
+  getDashboard(){
     this.authService.getDashboard().subscribe((res:{success:boolean,error:string,data:[ReposData]})=>{
-      if(res.success){
+      if(!res.success){
+        alert(res.error);
+      }else{
         this.reposData = res.data ; 
       }
     })
   }
-
   openDetailedPage(repoName){
-    localStorage.setItem('repoName',repoName.toString());
-    this.router.navigate(['/detailed']);
+    this.router.navigate(['/detailed',repoName]);
   }
 }
