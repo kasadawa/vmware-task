@@ -1,4 +1,5 @@
 /* Mode modules */
+'use strict'
 const   express = require('express'),
         jwt = require('jsonwebtoken'), // give session JSON web token
         config = require('../config'); 

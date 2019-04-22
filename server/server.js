@@ -1,3 +1,4 @@
+'use strict'
 const   express = require('express'),
         cors = require('cors'),
         bodyParser = require('body-parser'),
@@ -14,7 +15,6 @@ app.use(cors({origin: 'http://localhost:4200', credentials: true}));
 app.use(cookieParser(config.secret))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-
 
 
 /* Connect to the database */

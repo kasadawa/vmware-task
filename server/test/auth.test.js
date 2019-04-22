@@ -7,7 +7,7 @@ const   chai = require('chai'),
     config = require('../config'),
     sinon = require('sinon'),
     repos = require('../routes/repos'),
-    spy = sinon.spy(repos,'getRepoDetails'),
+    spy = sinon.spy(repos.instance,'init'),
     server = require('../server'),
     expect = chai.expect ;
 
@@ -79,12 +79,12 @@ describe('Route  /auth Authenticated',  function()  {
         
         this.timeout(3000);
         
-       
+        // calling it here because it does not find the call before module export
+        repos.instance.init();
 
         setTimeout(function(){
             agent.get('/auth/dashboard').end((err,res) =>{
-
-                expect(repos.getRepoDetails.calledOnce).to.be.equal(true);
+                expect(repos.instance.init.calledOnce).to.be.equal(true);
                 expect(res.body.success).to.be.equal(true);
                 expect(res.body.data.length).to.be.equal(config.pinned_repos.length);
                 spy.restore();

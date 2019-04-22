@@ -1,4 +1,5 @@
 /* Mode modules */
+'use strict'
 const express = require('express'),
             jwt = require('jsonwebtoken'), // give session JSON web token
             repos = require('./repos'),
@@ -9,7 +10,8 @@ var router = express.Router();
 
 
 /* INIT PHASE  GET ALL DATA AND CACHE IT */
-repos.getRepoDetails();
+// repos.getRepoDetails();
+
 
 
 
@@ -52,26 +54,18 @@ router.post('/',(req,res,next)=>{
 })
 
 
-// with iterable protocol ;) 
 
 router.get('/dashboard',(req,res,next)=>{
-    const repoNames =  config.pinned_repos[Symbol.iterator]();
-    let response = {success: true, error:'',data:[]};
+   
+    const response = {success: true, error:'',data:[]};
 
-    var singleRepoName = repoNames.next(); 
+    const error = repos.instance.getPinnedRepos(response.data);
 
-    while(!singleRepoName.done){
-        let tmp = repos.myCache.get(singleRepoName.value);
-        if(!tmp){
-            
-            res.json({success:false , error:'Processing data, please wait && refresh'});
-            return next(); // end the router 
-            
-        }; // I dont think that this will end the execution
-        response.data.push(tmp);
-
-        singleRepoName = repoNames.next();     
+    if(error){
+        res.json({success:false, error:'Processing data, please wait && refresh'});
+        return next(); // end the router  
     }
+
 
     //if the data is processed return it
     res.json(response);
@@ -82,8 +76,9 @@ router.get('/dashboard',(req,res,next)=>{
 router.get('/detailed/:reponame',(req,res,next)=>{
     const {reponame} = req.params; 
     let response = {success: true, error:'',data:[]};
-    response.data = repos.myCache.get('detailed_'+reponame);
-    if(!response.data){
+    let error = repos.instance.getDetailedData(reponame,response.data);
+
+    if(error){
         res.json({success:false , error:'Processing data, please wait && refresh'});
         return next(); // end the router 
     }

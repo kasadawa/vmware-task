@@ -15,14 +15,14 @@ const   chai = require('chai'),
 describe('Testing the function inside the repos.js file',  ()  =>{
 
     it('getCount() Function with correct params ',  () => {
-        var spy = sinon.spy(repos,'getCount');
+        var spy = sinon.spy(repos.instance,'getCount');
 
         
-        return repos.getCount('commits','photon').then(function (res){
+        return repos.instance.getCount('commits','photon').then(function (res){
             
             expect(res).to.be.a('number');
-            expect(repos.getCount.calledWith('commits','photon')).to.be.equal(true);
-            expect(repos.getCount.calledOnce).to.be.equal(true);
+            expect(repos.instance.getCount.calledWith('commits','photon')).to.be.equal(true);
+            expect(repos.instance.getCount.calledOnce).to.be.equal(true);
             spy.restore();
         })
        
@@ -32,16 +32,16 @@ describe('Testing the function inside the repos.js file',  ()  =>{
 
     it('getCount() Function with In-correct first/second param ',  () => {
 
-        var spy = sinon.spy(repos,'getCount');
+        var spy = sinon.spy(repos.instance,'getCount');
 
-        return repos.getCount('commmits','photon').then()
+        return repos.instance.getCount('commmits','photon').then()
         .catch((res)=>{
            
             expect(res.message).to.be.a('string');
             expect(res.message).to.be.equal('The url was not loaded correctly');
 
-            expect(repos.getCount.calledWith('commmits','photon')).to.be.equal(true);
-            expect(repos.getCount.calledOnce).to.be.equal(true);
+            expect(repos.instance.getCount.calledWith('commmits','photon')).to.be.equal(true);
+            expect(repos.instance.getCount.calledOnce).to.be.equal(true);
             spy.restore();
         })
        
