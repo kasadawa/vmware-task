@@ -12,7 +12,7 @@
     
   </clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let item of reposData" (click)="openDetailedPage(item.name)">
+  <clr-dg-row *clrDgItems="let item of reposData" (click)="openDetailedPage(item.name)" >
       <clr-dg-cell>{{item.name}}</clr-dg-cell>
       <clr-dg-cell>{{item.commits}}</clr-dg-cell>
       <clr-dg-cell>{{item.releases}}</clr-dg-cell>

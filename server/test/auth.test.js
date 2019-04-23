@@ -3,11 +3,9 @@ process.env.NODE_ENV = 'test';
 //Require the dev-dependencies
 const   chai = require('chai'),
     chaiHttp = require('chai-http'),
-    should = chai.should(),
     config = require('../config'),
     sinon = require('sinon'),
     repos = require('../routes/repos'),
-    spy = sinon.spy(repos.instance,'init'),
     server = require('../server'),
     expect = chai.expect ;
 
@@ -66,6 +64,7 @@ describe('Route  /auth Authenticated',  function()  {
             expect(res).to.have.status(200);  
         });
     });
+
     it('After login - check the /auth/dashboard route',  () => {
             return agent.get('/auth/dashboard')
             .then( (res) =>{
@@ -78,7 +77,7 @@ describe('Route  /auth Authenticated',  function()  {
     it('After login - check the /auth/dashboard route after 5 seconds (to cache the req)',  function(done){
         
         this.timeout(3000);
-        
+        var spy = sinon.spy(repos.instance,'init');
         // calling it here because it does not find the call before module export
         repos.instance.init();
 

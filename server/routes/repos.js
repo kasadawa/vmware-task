@@ -145,7 +145,7 @@ class RepositoryData{
         }
         if(!!ret) ret = data;
 
-        return !ret ? false : true ;  
+        return !ret ;  
     }
 
     

@@ -49,4 +49,5 @@ export class GitViewerComponent implements OnInit {
   openDetailedPage(repoName){
     this.router.navigate(['/detailed',repoName]);
   }
+
 }

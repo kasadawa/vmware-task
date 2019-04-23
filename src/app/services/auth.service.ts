@@ -1,7 +1,6 @@
 import { Injectable,EventEmitter } from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { _HOST } from '../config';
-import { Observable } from 'rxjs';
 import {Router} from '@angular/router';
 
 @Injectable({
@@ -35,8 +34,8 @@ export class AuthService {
     return this.http.get(_HOST + '/auth/dashboard',{withCredentials:true});
   }
 
-  getDetailed(repoName){
-    return this.http.get(_HOST + '/auth/detailed/'+ repoName.toString() ,{withCredentials:true});
+  getDetailed(repoName:String){
+    return this.http.get(_HOST + '/auth/detailed/'+ repoName ,{withCredentials:true});
   }
 }
 

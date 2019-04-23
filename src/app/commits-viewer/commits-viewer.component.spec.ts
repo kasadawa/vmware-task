@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommitsViewerComponent } from './commits-viewer.component';
+import { ClarityModule } from '@clr/angular';
 
 describe('CommitsViewerComponent', () => {
   let component: CommitsViewerComponent;
@@ -8,7 +8,8 @@ describe('CommitsViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CommitsViewerComponent ]
+      imports:[ClarityModule],
+      declarations: [ CommitsViewerComponent]
     })
     .compileComponents();
   }));

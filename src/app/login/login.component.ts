@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger } from '@angular/animations';
-import { isError } from 'util';
 import { LoginService} from '../services/login.service';
 import {Router} from '@angular/router';
 @Component({
@@ -32,9 +30,6 @@ export class LoginComponent implements OnInit {
   }
   login(){
  
-    // we can check the email & password before sending them to the backend 
-
-
     this.loginService.login({email: this.email,password: this.password}).subscribe((data:{success:boolean,err:string})=>{
       if(data.success){
           this.router.navigate(['/dashboard']);
